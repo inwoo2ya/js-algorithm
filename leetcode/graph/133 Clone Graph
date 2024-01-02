@@ -1,0 +1,49 @@
+/**
+ * // Definition for a Node.
+ * function Node(val, neighbors) {
+ *    this.val = val === undefined ? 0 : val;
+ *    this.neighbors = neighbors === undefined ? [] : neighbors;
+ * };
+ */
+
+/**
+ * @param {Node} node
+ * @return {Node}
+ */
+
+ //이거 이웃 들 다 돌아보면서 푸는 것 같음(dfs)
+ // 근데 이거 왜 오류 뜸...? v.push(node.val)?
+
+const dfs = (node,visited)=>{
+    //root에 node neighbor없는 짭을 만들어주고
+     const root = new Node(node.val);
+     console.log(root,'입장 완료')
+     // visited에다가 root를 넣어줌 ex. root = {1:{val:1,neighbors:[]},2:{val:2,neighbors:[]},...}
+    visited[node.val] = root;
+    //node의 이웃으로 반복 문을 돌리자 ex)1이면 2(1,3),4(1,3)
+    node.neighbors.forEach((n)=>{
+        
+        if(!visited[n.val]) {//visited[n.val]에 값이 없다면
+        console.log("if",n,'이건 dfs입장')
+        const newNode = dfs(n,visited); 
+        //dfs 돌려서 ex) 1이면 2,4 => 2이면 1에서 else 문으로 건너뛰고, 3이면 또다시 dfs문으로 돌아감 계속 반복문을 돌리면서 이웃들을 찾음 1->2->3->4
+        console.log("if",newNode,`이게 root[${root.val}].neighbor에 들어감`);
+        root.neighbors.push(newNode);
+    }else{
+        const newNode = visited[n.val];
+        console.log("else",newNode,`이게 root[${root.val}].neighbor에 들어감`);
+        //root 이웃 안에 visited[n.val]값을 넣음 ex) visited[1] = {val:1, neighbors:[]} =이걸 root.neighbors[1]
+        root.neighbors.push(newNode);
+    }})
+    
+    return root;
+}
+
+var cloneGraph = function(node) {
+     if(!node){
+        return null;
+    }
+    //방문 안찍어주면 계속 무한루프 돌아유
+    const visited = {};
+    return dfs(node,visited);
+};
